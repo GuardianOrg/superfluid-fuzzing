@@ -44,6 +44,9 @@ under active development.
 
 :star: Congrats! Now you should be all set!
 
+## Echidna Command
+`echidna ./contracts/superfluid-tests/SuperHotFuzz.sol --contract SuperHotFuzz --config echidna.yaml`
+
 ## Develop A New Hot Fuzzer
 
 1. Create a new hot fuzz contract inheriting `HotFuzzBase`.
