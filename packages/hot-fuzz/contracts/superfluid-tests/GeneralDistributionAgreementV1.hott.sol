@@ -9,46 +9,65 @@ import {ISuperfluidPool} from
 import {PoolConfig} from
     "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/gdav1/IGeneralDistributionAgreementV1.sol";
 import {HotFuzzBase, SuperfluidTester} from "../HotFuzzBase.sol";
+import "./PostconditionsGDA.sol";
 
-abstract contract GDAHotFuzzMixin is HotFuzzBase {
+abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
     using SuperTokenV1Library for SuperToken;
 
     ISuperfluidPool[] public pools;
 
     function getRandomPool(uint8 input) public view returns (ISuperfluidPool pool) {
         if (pools.length > 0) {
-            pool = pools[input % (pools.length - 1)];
+            pool = pools[input % (pools.length)];
         }
     }
 
-    function createPool(uint8 a, PoolConfig memory config) public {
-        (SuperfluidTester tester) = _getOneTester(a);
-        ISuperfluidPool pool = tester.createPool(address(tester), config);
+   function createPool(uint8 a, PoolConfig memory config) public {
+        SuperfluidTester tester = _getOneTester(a);
+        (bool success, bytes memory returnData) = address(tester).call(
+            abi.encodeWithSelector(tester.createPool.selector, address(tester), config)
+        );
+        ISuperfluidPool pool = abi.decode(returnData, (ISuperfluidPool));
         _addPool(pool);
+        createPoolPostconditions(success, returnData);
     }
+
+    event DebugPool(string s, address a);
 
     function maybeConnectPool(bool doConnect, uint8 a, uint8 b) public {
         (SuperfluidTester tester) = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
+        if (address(pool) == address(0)) return;
+        bool success;
+        bytes memory returnData;
         if (doConnect) {
-            tester.connectPool(pool);
+            (success, returnData) = address(tester).call(abi.encodeWithSelector(tester.connectPool.selector,pool));
         } else {
-            tester.disconnectPool(pool);
+            (success, returnData) = address(tester).call(abi.encodeWithSelector(tester.disconnectPool.selector,pool));
         }
     }
 
     function distribute(uint8 a, uint8 b, uint128 requestedAmount) public {
-        (SuperfluidTester tester) = _getOneTester(a);
+        SuperfluidTester tester = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
 
-        tester.distribute(address(tester), pool, requestedAmount);
+        (bool success, bytes memory returnData) = address(tester).call(
+            abi.encodeWithSelector(
+                tester.distribute.selector,
+                address(tester),
+                pool,
+                requestedAmount
+            )
+        );
+        // distributePostconditions(success, returnData);
     }
 
     function distributeFlow(uint8 a, uint8 b, uint8 c, int96 flowRate) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(c);
-
-        testerA.distributeFlow(address(testerB), pool, flowRate);
+        flowRate = int96(fl.clamp(flowRate, 1, 1e18));
+        (bool success, bytes memory returnData) = address(testerA).call(abi.encodeWithSelector(testerA.distributeFlow.selector,address(testerB),pool,flowRate));
+        distributeFlowPostconditions(success, returnData);
     }
 
     /// @notice testerA liquidates a flow from testerB to pool
@@ -57,36 +76,54 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase {
         (SuperfluidTester liquidator, SuperfluidTester distributor) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(c);
 
-        // we first check the condition for whether a flow exists
+        // check existing flow & balance conditions
         bool flowExists = superToken.getFlowDistributionFlowRate(address(distributor), pool) > 0;
-
-        // then we ensure that the sender has a critical balance
         (int256 availableBalance,,,) = superToken.realtimeBalanceOfNow(address(distributor));
         bool isDistributorCritical = availableBalance < 0;
+
+        if (flowExists) {
+            fl.log("Flow exists");
+        }
+        if (isDistributorCritical) {
+            fl.log("Distributor critical");
+        }
+        int96 flowRate = superToken.getFlowDistributionFlowRate(address(distributor), pool);
+        if (flowRate == 0) {
+            fl.log("==0");
+        }
+        else if (flowRate > 0) {
+            fl.log(">0");
+        }
+        else if (flowRate < -1e18) {
+            fl.log("< -1e18");
+        }
+        else {
+            fl.log("Between 0 and -1e18");
+        }
 
         // if both conditions are met, a liquidation should occur without fail
         bool isLiquidationValid = flowExists && isDistributorCritical;
         if (isLiquidationValid) {
-            // solhint-disable-next-line no-empty-blocks
-            try liquidator.gdaLiquidate(address(distributor), pool) {}
-            catch {
-                liquidationFails = true;
-            }
+            (bool success, bytes memory returnData) = address(liquidator).call(
+                abi.encodeWithSelector(liquidator.gdaLiquidate.selector, address(distributor), pool)
+            );
+            if (!success) liquidationFails = true;
+            gdaLiquidateFlowPostconditions(success, returnData);
         }
     }
-
+  
     function updateMemberUnits(uint8 a, uint8 b, uint128 units) public {
-        (SuperfluidTester tester) = _getOneTester(a);
+        SuperfluidTester tester = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
-
-        tester.updateMemberUnits(pool, address(tester), units);
-    }
-
-    function poolTransfer(uint8 a, uint8 b, uint256 amount) public {
-        (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
-        ISuperfluidPool pool = getRandomPool(b);
-
-        testerA.transfer(pool, address(testerB), amount);
+        (bool success, bytes memory returnData) = address(tester).call(
+            abi.encodeWithSelector(
+                tester.updateMemberUnits.selector,
+                pool,
+                address(tester),
+                units
+            )
+        );
+        updateMemberUnitsPostconditions(success, returnData);
     }
 
     function poolTransferFrom(uint8 a, uint8 b, uint8 c, uint256 amount) public {
@@ -133,7 +170,12 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase {
     }
 
     function _addPool(ISuperfluidPool pool) internal {
+        // if (address(pool) != address(0)) {
+        //     fl.log("Pool address:", address(pool));
+        //     fl.t(false, "<_addPool> NON 0 ADDRESS");
+        // }
         pools.push(pool);
+
         _addAccount(address(pool));
     }
 }

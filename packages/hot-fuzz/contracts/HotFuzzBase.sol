@@ -22,8 +22,13 @@ import {
     IConstantFlowAgreementV1,
     SuperfluidTester
 } from "./SuperfluidTester.sol";
+import "@perimetersec/fuzzlib/src/FuzzBase.sol";
+import "./superfluid-tests/RevertHandler.sol";
+import "./superfluid-tests/PostconditionsBase.sol";
+import "@perimetersec/fuzzlib/src/IHevm.sol";
 
-contract HotFuzzBase {
+
+contract HotFuzzBase is PostconditionsBase {
     using SuperTokenV1Library for SuperToken;
     // constants
     uint private constant INIT_TOKEN_BALANCE = type(uint160).max;

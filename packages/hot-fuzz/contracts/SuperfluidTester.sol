@@ -10,8 +10,10 @@ import {PoolConfig} from
 import "@superfluid-finance/ethereum-contracts/contracts/agreements/ConstantFlowAgreementV1.sol";
 import {SuperTokenV1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperTokenV1Library.sol";
 import "@superfluid-finance/ethereum-contracts/contracts/utils/SuperfluidFrameworkDeployer.t.sol";
+import "@perimetersec/fuzzlib/src/FuzzBase.sol";
+import "@perimetersec/fuzzlib/src/IHevm.sol";
 
-contract SuperfluidTester {
+contract SuperfluidTester is FuzzBase {
     using SuperTokenV1Library for ISuperToken;
 
     SuperfluidFrameworkDeployer.Framework internal sf;
@@ -122,6 +124,7 @@ contract SuperfluidTester {
 
     // GDA functions
     function createPool(address admin, PoolConfig memory config) public returns (ISuperfluidPool pool) {
+        vm.prank(admin);
         pool = superToken.createPool(admin, config);
     }
 
@@ -138,6 +141,7 @@ contract SuperfluidTester {
     }
 
     function distributeFlow(address from, ISuperfluidPool pool, int96 flowRate) public {
+        vm.prank(from);
         superToken.distributeFlow(from, pool, flowRate);
     }
 
