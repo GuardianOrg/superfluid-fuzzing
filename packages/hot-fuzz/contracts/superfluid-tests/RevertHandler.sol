@@ -53,11 +53,13 @@ abstract contract RevertHandler is FuzzBase, FuzzConstants {
     }
 
     function _getAllowedCustomErrors() internal pure virtual returns (bytes4[] memory) {
-        bytes4[] memory allowedErrors = new bytes4[](3);
+        bytes4[] memory allowedErrors = new bytes4[](4);
         // Uncomment to allow empty reverts:
         allowedErrors[0] = bytes4(hex'7761a5e5'); // GDA_DISTRIBUTE_FROM_ANY_ADDRESS_NOT_ALLOWED
         allowedErrors[1] = bytes4(hex'33115c3f'); // GDA_INSUFFICIENT_BALANCE
         allowedErrors[2] = bytes4(hex'f67d263e'); // GDA_DISTRIBUTE_FOR_OTHERS_NOT_ALLOWED
+        allowedErrors[3] = bytes4(hex'ceddc0be'); // SUPERFLUID_POOL_SELF_TRANSFER_NOT_ALLOWED
+        allowedErrors[4] = bytes4(hex'2285efba'); // SUPERFLUID_POOL_TRANSFER_UNITS_NOT_ALLOWED
         return allowedErrors;
     }
 
@@ -102,8 +104,14 @@ abstract contract RevertHandler is FuzzBase, FuzzConstants {
             "CallUtils: target revert()"
         );
 
-        bytes[] memory allowedErrors = new bytes[](1);
+        bytes memory IGNORE_STRING_REVERT = abi.encodeWithSelector(
+            bytes4(keccak256("Error(string)")),
+            "IGNORE: ZERO ADDRESS POOL"
+        );
+
+        bytes[] memory allowedErrors = new bytes[](2);
         allowedErrors[0] = CALL_UTILS_TARGET_REVERT;
+        allowedErrors[1] = IGNORE_STRING_REVERT;
 
         for (uint256 i = 0; i < allowedErrors.length; i++) {
             if (keccak256(returnData) == keccak256(allowedErrors[i])) {

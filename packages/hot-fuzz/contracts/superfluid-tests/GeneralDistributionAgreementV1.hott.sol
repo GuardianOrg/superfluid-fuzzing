@@ -10,13 +10,21 @@ import {PoolConfig} from
     "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/gdav1/IGeneralDistributionAgreementV1.sol";
 import {HotFuzzBase, SuperfluidTester} from "../HotFuzzBase.sol";
 import "./PostconditionsGDA.sol";
-
+import "forge-std/console.sol";
 abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
     using SuperTokenV1Library for SuperToken;
 
     ISuperfluidPool[] public pools;
+    bytes4 private constant SEL_TRANSFER_FROM = bytes4(keccak256("transferFrom(address,address,address,uint256)"));
 
-    function getRandomPool(uint8 input) public view returns (ISuperfluidPool pool) {
+    function getRandomPool(uint8 input) public returns (ISuperfluidPool pool) {
+        if (pools.length == 0) {
+            PoolConfig memory config;
+            config.transferabilityForUnitsOwner = true;
+            config.distributionFromAnyAddress = true;
+            createPool(input, config);
+        }
+
         if (pools.length > 0) {
             pool = pools[input % (pools.length)];
         }
@@ -28,6 +36,7 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
             abi.encodeWithSelector(tester.createPool.selector, address(tester), config)
         );
         ISuperfluidPool pool = abi.decode(returnData, (ISuperfluidPool));
+        require(address(pool) != address(0));
         _addPool(pool);
         createPoolPostconditions(success, returnData);
     }
@@ -45,6 +54,7 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
         } else {
             (success, returnData) = address(tester).call(abi.encodeWithSelector(tester.disconnectPool.selector,pool));
         }
+        maybeConnectPoolPostconditions(success, returnData);
     }
 
     function distribute(uint8 a, uint8 b, uint128 requestedAmount) public {
@@ -59,7 +69,7 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
                 requestedAmount
             )
         );
-        // distributePostconditions(success, returnData);
+        distributePostconditions(success, returnData);
     }
 
     function distributeFlow(uint8 a, uint8 b, uint8 c, int96 flowRate) public {
@@ -115,6 +125,8 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
     function updateMemberUnits(uint8 a, uint8 b, uint128 units) public {
         SuperfluidTester tester = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
+        console.log("Pool:", address(pool));
+        units = uint128(fl.clamp(units, 0, uint64(type(int64).max)));
         (bool success, bytes memory returnData) = address(tester).call(
             abi.encodeWithSelector(
                 tester.updateMemberUnits.selector,
@@ -130,8 +142,20 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         (SuperfluidTester tester) = _getOneTester(c);
         ISuperfluidPool pool = getRandomPool(b);
+        amount = fl.clamp(amount, 0, pool.balanceOf(address(tester)));
 
-        testerA.transferFrom(pool, address(tester), address(testerB), amount);
+        tester.approve(pool, address(testerA), amount);
+        require(address(tester) != address(testerB), "self-transfer not allowed");
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                SEL_TRANSFER_FROM,
+                pool,
+                address(tester),
+                address(testerB),
+                amount
+            )
+        );
+        poolTransferFromPostconditions(success, returnData);
     }
 
     function poolIncreaseAllowance(uint8 a, uint8 b, uint256 addedValue) public {
@@ -158,15 +182,23 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
     function claimAll(uint8 a, uint8 b) public {
         (SuperfluidTester tester) = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
-
-        tester.claimAll(pool);
+        (bool success, bytes memory returnData) = address(tester).call(
+            abi.encodeWithSelector(bytes4(keccak256("claimAll(address)")), pool)
+        );
+        claimAllPostconditions(success, returnData);
     }
 
     function claimAllForMember(uint8 a, uint8 b) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
-
-        testerA.claimAll(pool, address(testerB));
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                bytes4(keccak256("claimAll(address,address)")),
+                pool,
+                address(testerB)
+            )
+        );
+        claimAllForMemberPostconditions(success, returnData);
     }
 
     function _addPool(ISuperfluidPool pool) internal {

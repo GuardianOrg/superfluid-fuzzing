@@ -32,6 +32,9 @@ import { IResolver } from "../interfaces/utils/IResolver.sol";
 import { SimpleForwarder } from "../utils/SimpleForwarder.sol";
 import { ERC2771Forwarder } from "../utils/ERC2771Forwarder.sol";
 import { MacroForwarder } from "../utils/MacroForwarder.sol";
+import "forge-std/Test.sol";
+import { ERC1820RegistryCompiled } from "../libs/ERC1820RegistryCompiled.sol";
+
 
 /// @title Superfluid Framework Deployment Steps
 /// @author Superfluid
@@ -39,7 +42,7 @@ import { MacroForwarder } from "../utils/MacroForwarder.sol";
 /// @dev This was necessary because of the contract size limit of the deployed contract
 ///      which is an issue when deploying the original framework with Hardhat.
 /// https://github.com/NomicFoundation/hardhat/issues/3404#issuecomment-1346849400
-contract SuperfluidFrameworkDeploymentSteps {
+contract SuperfluidFrameworkDeploymentSteps is Test {
     bool public constant DEFAULT_NON_UPGRADEABLE = false;
     bool public constant DEFAULT_APP_WHITELISTING_ENABLED = false;
     address public constant DEFAULT_REWARD_ADDRESS = address(69);
@@ -282,6 +285,7 @@ contract SuperfluidFrameworkDeploymentSteps {
             batchLiquidator = SuperfluidPeripheryDeployerLibrary.deployBatchLiquidator(host);
 
             // Deploy TOGA
+            vm.etch(ERC1820RegistryCompiled.at, ERC1820RegistryCompiled.bin);
             if (!_is1820Deployed()) revert DEPLOY_TOGA_REQUIRES_1820();
             toga = SuperfluidPeripheryDeployerLibrary.deployTOGA(host, DEFAULT_TOGA_MIN_BOND_DURATION);
             testGovernance.setRewardAddress(host, ISuperfluidToken(address(0)), address(toga));

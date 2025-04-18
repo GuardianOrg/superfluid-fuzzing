@@ -4,3 +4,7 @@
 [submodule "packages/hot-fuzz/lib/fuzzlib"]
 	path = packages/hot-fuzz/lib/fuzzlib
 	url = https://github.com/perimetersec/fuzzlib
+[submodule "lib/superfluid-protocol-monorepo"]
+	path = lib/superfluid-protocol-monorepo
+	url = https://github.com/superfluid-finance/protocol-monorepo
+	branch = dev

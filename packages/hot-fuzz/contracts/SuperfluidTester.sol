@@ -151,6 +151,7 @@ contract SuperfluidTester is FuzzBase {
 
     // SuperfluidPool
     function updateMemberUnits(ISuperfluidPool pool, address member, uint128 units) public {
+        vm.prank(pool.admin());
         pool.updateMemberUnits(member, units);
     }
 
