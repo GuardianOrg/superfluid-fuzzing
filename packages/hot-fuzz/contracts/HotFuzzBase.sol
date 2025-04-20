@@ -23,12 +23,11 @@ import {
     SuperfluidTester
 } from "./SuperfluidTester.sol";
 import "@perimetersec/fuzzlib/src/FuzzBase.sol";
-import "./superfluid-tests/RevertHandler.sol";
-import "./superfluid-tests/PostconditionsBase.sol";
 import "@perimetersec/fuzzlib/src/IHevm.sol";
+import "./superfluid-tests/FuzzConstants.sol";
 
 
-contract HotFuzzBase is PostconditionsBase {
+contract HotFuzzBase is FuzzBase, FuzzConstants {
     using SuperTokenV1Library for SuperToken;
     // constants
     uint private constant INIT_TOKEN_BALANCE = type(uint160).max;
@@ -48,14 +47,14 @@ contract HotFuzzBase is PostconditionsBase {
     uint256 internal expectedTotalSupply = 0;
     bool internal liquidationFails;
 
-    constructor(uint nTesters_) {
+    constructor() {
         _sfDeployer = new SuperfluidFrameworkDeployer();
         _sfDeployer.deployTestFramework();
         sf = _sfDeployer.getFramework();
 
         (token, superToken) =
             _sfDeployer.deployWrapperSuperToken("HOTFuzz Token", "HOTT", 18, type(uint256).max, address(0));
-        nTesters = nTesters_;
+        nTesters = 10;
         otherAccounts = new address[](0);
 
         _addAccount(address(sf.gda));
@@ -133,7 +132,7 @@ contract HotFuzzBase is PostconditionsBase {
     }
 
     /**************************************************************************
-     * Invariances
+     * Invariants
      **************************************************************************/
 
     function echidna_check_total_supply() public view returns (bool) {

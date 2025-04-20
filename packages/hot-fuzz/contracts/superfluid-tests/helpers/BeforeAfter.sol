@@ -2,8 +2,8 @@ pragma solidity ^0.8.0;
 
 import {ISuperfluidPool} from
     "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/gdav1/ISuperfluidPool.sol";
-
-contract BeforeAfter {
+import {HotFuzzBase} from "../../HotFuzzBase.sol";
+contract BeforeAfter is HotFuzzBase {
     
     mapping(uint8 => State) states;
    

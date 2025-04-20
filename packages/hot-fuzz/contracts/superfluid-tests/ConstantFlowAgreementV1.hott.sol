@@ -7,7 +7,7 @@ import {SuperTokenV1Library} from "@superfluid-finance/ethereum-contracts/contra
 import "../HotFuzzBase.sol";
 import "./PostconditionsCFA.sol";
 
-abstract contract CFAHotFuzzMixin is HotFuzzBase, PostconditionsCFA {
+abstract contract CFAHotFuzzMixin is PostconditionsCFA {
     using SuperTokenV1Library for SuperToken;
 
     function createFlow(uint8 a, uint8 b, int64 flowRate) public {
@@ -185,7 +185,7 @@ abstract contract CFAHotFuzzMixin is HotFuzzBase, PostconditionsCFA {
 }
 
 contract CFAHotFuzz is CFAHotFuzzMixin {
-    constructor() HotFuzzBase(10) {
+    constructor() {
         _initTesters();
     }
 }

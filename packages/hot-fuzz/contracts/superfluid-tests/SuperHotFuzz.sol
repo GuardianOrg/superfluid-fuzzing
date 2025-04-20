@@ -7,7 +7,7 @@ import "./SuperToken.hott.sol";
 import "@perimetersec/fuzzlib/src/FuzzBase.sol";
 
 // Combine all the hot fuzzes
-contract SuperHotFuzz is HotFuzzBase(10), CFAHotFuzzMixin, GDAHotFuzzMixin, SuperTokenHotFuzzMixin {
+contract SuperHotFuzz is CFAHotFuzzMixin, GDAHotFuzzMixin, SuperTokenHotFuzzMixin {
     constructor() {
         _initTesters();
     }

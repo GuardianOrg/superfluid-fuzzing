@@ -11,7 +11,7 @@ import {PoolConfig} from
 import {HotFuzzBase, SuperfluidTester} from "../HotFuzzBase.sol";
 import "./PostconditionsGDA.sol";
 import "forge-std/console.sol";
-abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
+abstract contract GDAHotFuzzMixin is PostconditionsGDA {
     using SuperTokenV1Library for SuperToken;
 
     ISuperfluidPool[] public pools;
@@ -83,6 +83,7 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
         ISuperfluidPool pool = getRandomPool(c);
         flowRate = int96(fl.clamp(flowRate, 1, 1e18));
         (bool success, bytes memory returnData) = address(testerA).call(abi.encodeWithSelector(testerA.distributeFlow.selector,address(testerB),pool,flowRate));
+
         distributeFlowPostconditions(success, returnData);
     }
 
@@ -256,7 +257,7 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
     }
 }
 
-contract GDAHotFuzz is HotFuzzBase(10), GDAHotFuzzMixin {
+contract GDAHotFuzz is GDAHotFuzzMixin {
     uint256 public constant NUM_POOLS = 3;
 
     constructor() {

@@ -67,7 +67,7 @@ abstract contract SuperTokenHotFuzzMixin is HotFuzzBase {
 }
 
 contract SuperTokenHotFuzz is SuperTokenHotFuzzMixin {
-    constructor() HotFuzzBase(10) {
+    constructor() {
         _initTesters();
     }
 }

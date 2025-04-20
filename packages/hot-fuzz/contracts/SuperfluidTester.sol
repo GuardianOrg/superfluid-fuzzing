@@ -13,7 +13,7 @@ import "@superfluid-finance/ethereum-contracts/contracts/utils/SuperfluidFramewo
 import "@perimetersec/fuzzlib/src/FuzzBase.sol";
 import "@perimetersec/fuzzlib/src/IHevm.sol";
 
-contract SuperfluidTester is FuzzBase {
+contract SuperfluidTester {
     using SuperTokenV1Library for ISuperToken;
 
     SuperfluidFrameworkDeployer.Framework internal sf;

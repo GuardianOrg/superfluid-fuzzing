@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import {HotFuzzBase} from "../HotFuzzBase.sol";
 import "@perimetersec/fuzzlib/src/FuzzLibString.sol";
 import "@perimetersec/fuzzlib/src/FuzzBase.sol";
-import "./FuzzConstants.sol";
+import "./helpers/BeforeAfter.sol";
 
-abstract contract RevertHandler is FuzzBase, FuzzConstants {
+abstract contract RevertHandler is BeforeAfter {
 
     bool constant CATCH_EMPTY_REVERTS = true;
     bool constant CATCH_REQUIRE_REVERT = true;
