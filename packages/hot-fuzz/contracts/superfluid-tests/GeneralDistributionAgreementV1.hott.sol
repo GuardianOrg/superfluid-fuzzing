@@ -61,6 +61,11 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
         SuperfluidTester tester = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
 
+        _before(new address[](0), address(pool));
+        (
+           ISuperfluidPool.PoolIndexData memory beforeData
+        ) = pool.poolOperatorGetIndex();
+
         (bool success, bytes memory returnData) = address(tester).call(
             abi.encodeWithSelector(
                 tester.distribute.selector,
@@ -69,7 +74,8 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
                 requestedAmount
             )
         );
-        distributePostconditions(success, returnData);
+        
+        distributePostconditions(success, returnData, address(pool));
     }
 
     function distributeFlow(uint8 a, uint8 b, uint8 c, int96 flowRate) public {
@@ -158,25 +164,63 @@ abstract contract GDAHotFuzzMixin is HotFuzzBase, PostconditionsGDA {
         poolTransferFromPostconditions(success, returnData);
     }
 
-    function poolIncreaseAllowance(uint8 a, uint8 b, uint256 addedValue) public {
+    function poolIncreaseAllowance(
+        uint8 a,
+        uint8 b,
+        uint256 addedValue
+    ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
+        addedValue = fl.clamp(addedValue, 0, type(uint256).max - pool.allowance(address(testerA), address(testerB)));
 
-        testerA.increaseAllowance(pool, address(testerB), addedValue);
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                bytes4(keccak256("increaseAllowance(address,address,uint256)")),
+                pool,
+                address(testerB),
+                addedValue
+            )
+        );
+        poolIncreaseAllowancePostconditions(success, returnData);
     }
 
-    function poolDecreaseAllowance(uint8 a, uint8 b, uint256 subtractedValue) public {
+    function poolDecreaseAllowance(
+        uint8 a,
+        uint8 b,
+        uint256 subtractedValue
+    ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
+        subtractedValue = fl.clamp(subtractedValue, 0, pool.allowance(address(testerA), address(testerB)));
 
-        testerA.decreaseAllowance(pool, address(testerB), subtractedValue);
+
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                bytes4(keccak256("decreaseAllowance(address,address,uint256)")),
+                pool,
+                address(testerB),
+                subtractedValue
+            )
+        );
+        poolDecreaseAllowancePostconditions(success, returnData);
     }
 
-    function poolApprove(uint8 a, uint8 b, uint256 amount) public {
+    function poolApprove(
+        uint8 a,
+        uint8 b,
+        uint256 amount
+    ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
-
-        testerA.approve(pool, address(testerB), amount);
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                bytes4(keccak256("approve(address,address,uint256)")),
+                pool,
+                address(testerB),
+                amount
+            )
+        );
+        poolApprovePostconditions(success, returnData);
     }
 
     function claimAll(uint8 a, uint8 b) public {

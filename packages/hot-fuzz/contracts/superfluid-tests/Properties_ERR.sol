@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "./RevertHandler.sol";
-abstract contract Properties_ERR is RevertHandler {
+import "./helpers/BeforeAfter.sol";
+
+abstract contract Properties_ERR is RevertHandler, BeforeAfter {
 
 }

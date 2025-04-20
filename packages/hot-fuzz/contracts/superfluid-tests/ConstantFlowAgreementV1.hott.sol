@@ -5,21 +5,35 @@ pragma solidity >= 0.8.0;
 import {SuperToken} from "@superfluid-finance/ethereum-contracts/contracts/superfluid/SuperToken.sol";
 import {SuperTokenV1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperTokenV1Library.sol";
 import "../HotFuzzBase.sol";
+import "./PostconditionsCFA.sol";
 
-abstract contract CFAHotFuzzMixin is HotFuzzBase {
+abstract contract CFAHotFuzzMixin is HotFuzzBase, PostconditionsCFA {
     using SuperTokenV1Library for SuperToken;
 
     function createFlow(uint8 a, uint8 b, int64 flowRate) public {
         require(flowRate > 0);
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
-
-        testerA.flow(address(testerB), int96(flowRate));
+        require(address(testerA) != address(testerB), "sender should not be receiver");
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.flow.selector,
+                address(testerB),
+                int96(flowRate)
+            )
+        );
+        createFlowPostconditions(success, returnData);
     }
 
     function deleteFlow(uint8 a, uint8 b) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
-
-        testerA.flow(address(testerB), 0);
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.flow.selector,
+                address(testerB),
+                int96(0)
+            )
+        );
+        deleteFlowPostconditions(success, returnData);
     }
 
     /// @notice testerA liquidates a flow from testerB to testerC
@@ -37,11 +51,16 @@ abstract contract CFAHotFuzzMixin is HotFuzzBase {
         // if both conditions are met, a liquidation should occur without fail
         bool isLiquidationValid = flowExists && isSenderCritical;
         if (isLiquidationValid) {
-            // solhint-disable-next-line no-empty-blocks
-            try liquidator.cfaLiquidate(address(sender), address(recipient)) {}
-            catch {
-                liquidationFails = true;
-            }
+            (bool success, bytes memory returnData) = address(liquidator).call(
+                abi.encodeWithSelector(
+                    liquidator.cfaLiquidate.selector,
+                    address(sender),
+                    address(recipient)
+                )
+            );
+        
+            if (!success) liquidationFails = true;
+            cfaLiquidateFlowPostconditions(success, returnData);
         }
     }
 
@@ -55,34 +74,78 @@ abstract contract CFAHotFuzzMixin is HotFuzzBase {
     ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
 
-        testerA.setFlowPermissions(address(testerB), allowCreate, allowUpdate, allowDelete, flowRateAllowance);
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.setFlowPermissions.selector,
+                address(testerB),
+                allowCreate,
+                allowUpdate,
+                allowDelete,
+                flowRateAllowance
+            )
+        );
+        setFlowPermissionsPostconditions(success, returnData);
     }
 
     function setMaxFlowPermissions(uint8 a, uint8 b) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
 
-        testerA.setMaxFlowPermissions(address(testerB));
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.setMaxFlowPermissions.selector,
+                address(testerB)
+            )
+        );
+        setMaxFlowPermissionsPostconditions(success, returnData);
     }
 
     function revokeFlowPermissions(uint8 a, uint8 b) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
 
-        testerA.revokeFlowPermissions(address(testerB));
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.revokeFlowPermissions.selector,
+                address(testerB)
+            )
+        );
+        revokeFlowPermissionsPostconditions(success, returnData);
     }
 
-    function increaseFlowRateAllowance(uint8 a, uint8 b, int96 addedFlowRateAllowance) public {
+    function increaseFlowRateAllowance(
+        uint8 a,
+        uint8 b,
+        int96 addedFlowRateAllowance
+    ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
 
-        testerA.increaseFlowRateAllowance(address(testerB), addedFlowRateAllowance);
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.increaseFlowRateAllowance.selector,
+                address(testerB),
+                addedFlowRateAllowance
+            )
+        );
+        increaseFlowRateAllowancePostconditions(success, returnData);
     }
 
-    function decreaseFlowRateAllowance(uint8 a, uint8 b, int96 subtractedFlowRateAllowance) public {
+    function decreaseFlowRateAllowance(
+        uint8 a,
+        uint8 b,
+        int96 subtractedFlowRateAllowance
+    ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
 
-        testerA.decreaseFlowRateAllowance(address(testerB), subtractedFlowRateAllowance);
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.decreaseFlowRateAllowance.selector,
+                address(testerB),
+                subtractedFlowRateAllowance
+            )
+        );
+        decreaseFlowRateAllowancePostconditions(success, returnData);
     }
 
-    function increaseFlowRateAllowanceWithPermissions(
+     function increaseFlowRateAllowanceWithPermissions(
         uint8 a,
         uint8 b,
         uint8 permissionsToAdd,
@@ -90,7 +153,15 @@ abstract contract CFAHotFuzzMixin is HotFuzzBase {
     ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
 
-        testerA.increaseFlowRateAllowanceWithPermissions(address(testerB), permissionsToAdd, addedFlowRateAllowance);
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.increaseFlowRateAllowanceWithPermissions.selector,
+                address(testerB),
+                permissionsToAdd,
+                addedFlowRateAllowance
+            )
+        );
+        increaseFlowRateAllowanceWithPermissionsPostconditions(success, returnData);
     }
 
     function decreaseFlowRateAllowanceWithPermissions(
@@ -101,9 +172,15 @@ abstract contract CFAHotFuzzMixin is HotFuzzBase {
     ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
 
-        testerA.decreaseFlowRateAllowanceWithPermissions(
-            address(testerB), permissionsToRemove, subtractedFlowRateAllowance
+        (bool success, bytes memory returnData) = address(testerA).call(
+            abi.encodeWithSelector(
+                testerA.decreaseFlowRateAllowanceWithPermissions.selector,
+                address(testerB),
+                permissionsToRemove,
+                subtractedFlowRateAllowance
+            )
         );
+        decreaseFlowRateAllowanceWithPermissionsPostconditions(success, returnData);
     }
 }
 

@@ -3,8 +3,8 @@ pragma solidity ^0.8.0;
 
 import "./PostconditionsBase.sol";
 
-contract PostconditionsGDA is PostconditionsBase {
-    function createPoolPostconditions(
+contract PostconditionsCFA is PostconditionsBase {
+    function createFlowPostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -15,7 +15,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function maybeConnectPoolPostconditions(
+    function deleteFlowPostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -26,22 +26,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function distributePostconditions(
-        bool success,
-        bytes memory returnData,
-        address pool
-    ) internal {
-        _after(new address[](0), pool);
-        if (success) {
-            invariant_DISTR_01(pool);
-            invariant_DISTR_02(pool);
-            onSuccessInvariantsGeneral(returnData);
-        } else {
-            onFailInvariantsGeneral(returnData);
-        }
-    }
-
-    function distributeFlowPostconditions(
+    function cfaLiquidateFlowPostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -52,7 +37,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function gdaLiquidateFlowPostconditions(
+    function setFlowPermissionsPostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -63,7 +48,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function updateMemberUnitsPostconditions(
+    function setMaxFlowPermissionsPostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -74,7 +59,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function poolTransferPostconditions(
+    function revokeFlowPermissionsPostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -85,7 +70,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function poolTransferFromPostconditions(
+    function increaseFlowRateAllowancePostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -96,7 +81,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function poolIncreaseAllowancePostconditions(
+    function decreaseFlowRateAllowancePostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -107,7 +92,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function poolDecreaseAllowancePostconditions(
+    function increaseFlowRateAllowanceWithPermissionsPostconditions(
         bool success,
         bytes memory returnData
     ) internal {
@@ -118,29 +103,7 @@ contract PostconditionsGDA is PostconditionsBase {
         }
     }
 
-    function poolApprovePostconditions(
-        bool success,
-        bytes memory returnData
-    ) internal {
-        if (success) {
-            onSuccessInvariantsGeneral(returnData);
-        } else {
-            onFailInvariantsGeneral(returnData);
-        }
-    }
-
-    function claimAllPostconditions(
-        bool success,
-        bytes memory returnData
-    ) internal {
-        if (success) {
-            onSuccessInvariantsGeneral(returnData);
-        } else {
-            onFailInvariantsGeneral(returnData);
-        }
-    }
-
-    function claimAllForMemberPostconditions(
+    function decreaseFlowRateAllowanceWithPermissionsPostconditions(
         bool success,
         bytes memory returnData
     ) internal {

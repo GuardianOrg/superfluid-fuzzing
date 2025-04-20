@@ -285,7 +285,7 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
             batchLiquidator = SuperfluidPeripheryDeployerLibrary.deployBatchLiquidator(host);
 
             // Deploy TOGA
-            vm.etch(ERC1820RegistryCompiled.at, ERC1820RegistryCompiled.bin);
+            // vm.etch(ERC1820RegistryCompiled.at, ERC1820RegistryCompiled.bin);
             if (!_is1820Deployed()) revert DEPLOY_TOGA_REQUIRES_1820();
             toga = SuperfluidPeripheryDeployerLibrary.deployTOGA(host, DEFAULT_TOGA_MIN_BOND_DURATION);
             testGovernance.setRewardAddress(host, ISuperfluidToken(address(0)), address(toga));

@@ -15,6 +15,7 @@ contract EchidnaReproduce is SuperHotFuzz, Test {
     using SuperTokenV1Library for ISuperToken;
 
     // ROOT CAUSE: `toSemanticMoneyUnit` uint128 cannot fit into int128, hence SafeCast: value doesn't fit in 128 bits revert.
+    // Fixed with clamping to uint64.max within handler function.
     function testUpdateUnitsEmptyRevert() public {
        updateMemberUnits(0,0,170397380159611669441227919161889835218);
     }
@@ -32,5 +33,21 @@ contract EchidnaReproduce is SuperHotFuzz, Test {
     function testTransferFromPanicRevert() public {
         updateMemberUnits(0,0,1);
         poolTransferFrom(0,0,0,1);
+    }
+
+    // ROOT CAUSE: Revert within increaseFlowRateAllowanceWithPermissions due to int96 newFlowRateAllowance = oldFlowRateAllowance + addedFlowRateAllowance; overflow revert.
+    // Fixed with clamping within poolDecreaseAllowance
+    function testIncreaseFlowRateAllowanceTargetPanicked() public {
+        maybeConnectPool(false,0,0);
+        increaseFlowRateAllowance(252,255,24076480938201138371799179485);
+        increaseFlowRateAllowance(5,34,16134934835402215511660541702);
+    }
+
+    // ROOT CAUSE: Revert within increaseAllowance as addedValue is a large value and leads to overflow when adding to existing allowance
+    // Fixed with clamping within poolIncreaseAllowance
+    function testIncreaseAllowancePanic() public {
+        poolIncreaseAllowance(0,0,0);
+        poolApprove(21,8,612442562458672454002362005479039230215856049958800852273497177480331085578);
+        poolIncreaseAllowance(164,8,115183460409007582237719538714803597407649724829487892977901832368525523844240);
     }
 }

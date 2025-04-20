@@ -34,7 +34,7 @@ function toSemanticMoneyUnit(uint128 units) pure returns (Unit) {
     return Unit.wrap(uint256(units).toInt256().toInt128());
 }
 
-function poolIndexDataToWrappedParticle(SuperfluidPool.PoolIndexData memory data)
+function poolIndexDataToWrappedParticle(ISuperfluidPool.PoolIndexData memory data)
     pure
     returns (BasicParticle memory wrappedParticle)
 {
@@ -45,7 +45,7 @@ function poolIndexDataToWrappedParticle(SuperfluidPool.PoolIndexData memory data
     });
 }
 
-function poolIndexDataToPDPoolIndex(SuperfluidPool.PoolIndexData memory data)
+function poolIndexDataToPDPoolIndex(ISuperfluidPool.PoolIndexData memory data)
     pure
     returns (PDPoolIndex memory pdPoolIndex)
 {
@@ -65,13 +65,6 @@ contract SuperfluidPool is ISuperfluidPool, BeaconProxiable {
     using SemanticMoney for BasicParticle;
 
     // Structs
-    struct PoolIndexData {
-        uint128 totalUnits;
-        uint32 wrappedSettledAt;
-        int96 wrappedFlowRate;
-        int256 wrappedSettledValue;
-    }
-
     struct MemberData {
         uint128 ownedUnits;
         uint32 syncedSettledAt;

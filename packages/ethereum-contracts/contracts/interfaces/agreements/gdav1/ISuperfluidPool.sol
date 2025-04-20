@@ -18,6 +18,14 @@ interface ISuperfluidPool is IERC20, IERC20Metadata {
     error SUPERFLUID_POOL_TRANSFER_UNITS_NOT_ALLOWED(); // 0x2285efba
     error SUPERFLUID_POOL_SELF_TRANSFER_NOT_ALLOWED();  // 0xceddc0be
 
+     struct PoolIndexData {
+        uint128 totalUnits;
+        uint32 wrappedSettledAt;
+        int96 wrappedFlowRate;
+        int256 wrappedSettledValue;
+    }
+
+
     // Events
     event MemberUnitsUpdated(
         ISuperfluidToken indexed token, address indexed member, uint128 oldUnits, uint128 newUnits
@@ -107,4 +115,6 @@ interface ISuperfluidPool is IERC20, IERC20Metadata {
     /// @param subtractedValue The amount to decrease the allowance by
     /// @return true if successful
     function decreaseAllowance(address spender, uint256 subtractedValue) external returns (bool);
+
+    function poolOperatorGetIndex() external view returns (PoolIndexData memory);
 }
