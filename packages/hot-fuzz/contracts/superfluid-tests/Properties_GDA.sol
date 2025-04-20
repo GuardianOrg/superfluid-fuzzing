@@ -21,4 +21,12 @@ contract Properties_GDA is Properties_ERR {
             "DISTR-02: Wrapped settled value should increase after distribute"
         );
     }
+
+    function invariant_LIQ_01(address actor, address pool) internal {
+        fl.eq(
+            states[1].userStates[actor].gdaFlowRate,
+            0,
+            "LIQ-01: Post-liquidition GDA Flow Rate must be 0"
+        );
+    }
 }

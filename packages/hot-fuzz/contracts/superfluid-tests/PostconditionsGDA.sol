@@ -54,9 +54,16 @@ contract PostconditionsGDA is PostconditionsBase {
 
     function gdaLiquidateFlowPostconditions(
         bool success,
-        bytes memory returnData
+        bytes memory returnData,
+        address actor,
+        address pool
     ) internal {
+        address[] memory actorsToUpdate = new address[](1);
+        actorsToUpdate[0] = actor;
+        _after(actorsToUpdate, pool);
+        
         if (success) {
+            invariant_LIQ_01(actor, pool);
             onSuccessInvariantsGeneral(returnData);
         } else {
             onFailInvariantsGeneral(returnData);

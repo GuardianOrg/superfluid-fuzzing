@@ -81,7 +81,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
     function distributeFlow(uint8 a, uint8 b, uint8 c, int96 flowRate) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(c);
-        flowRate = int96(fl.clamp(flowRate, 1, 1e18));
+        flowRate = int96(fl.clamp(flowRate, -1e18, 1e18));
         (bool success, bytes memory returnData) = address(testerA).call(abi.encodeWithSelector(testerA.distributeFlow.selector,address(testerB),pool,flowRate));
 
         distributeFlowPostconditions(success, returnData);
@@ -125,7 +125,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
                 abi.encodeWithSelector(liquidator.gdaLiquidate.selector, address(distributor), pool)
             );
             if (!success) liquidationFails = true;
-            gdaLiquidateFlowPostconditions(success, returnData);
+            gdaLiquidateFlowPostconditions(success, returnData, address(distributor), address(pool));
         }
     }
   

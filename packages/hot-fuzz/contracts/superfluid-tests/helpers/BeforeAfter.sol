@@ -3,6 +3,8 @@ pragma solidity ^0.8.0;
 import {ISuperfluidPool} from
     "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/gdav1/ISuperfluidPool.sol";
 import {HotFuzzBase} from "../../HotFuzzBase.sol";
+import {IGeneralDistributionAgreementV1} from
+    "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/gdav1/IGeneralDistributionAgreementV1.sol";
 contract BeforeAfter is HotFuzzBase {
     
     mapping(uint8 => State) states;
@@ -14,6 +16,7 @@ contract BeforeAfter is HotFuzzBase {
 
     struct UserState {
         uint256 tokenBalance;
+        int96 gdaFlowRate;
     }
 
     struct State {
@@ -34,13 +37,17 @@ contract BeforeAfter is HotFuzzBase {
     }
 
     function _setStates(uint8 callNum, address[] memory actors, address pool) internal {
-        _processActors(callNum, actors);
+        _processActors(callNum, actors, pool);
         _updateCommonState(callNum, pool);
     }
 
-    function _processActors(uint8 callNum, address[] memory actors) private {
-        for (uint256 i = 0; i < actors.length; i++) {
-            _setActorState(callNum, actors[i]);
+    function _processActors(uint8 callNum, address[] memory actors, address pool) private {
+        // for (uint256 i = 0; i < actors.length; i++) {
+        //     _setActorState(callNum, actors[i]);
+        // }
+        // @audit Loop through all testers for now to simplify suite build.
+        for (uint256 i = 0; i < testers.length; i++) {
+            _setActorState(callNum, address(testers[i]), pool);
         }
     }
 
@@ -48,8 +55,8 @@ contract BeforeAfter is HotFuzzBase {
         _updatePoolState(callNum,  pool);
     }
 
-    function _setActorState(uint8 callNum, address actor) internal {
-        
+    function _setActorState(uint8 callNum, address actor, address pool) internal {
+        states[callNum].userStates[actor].gdaFlowRate = IGeneralDistributionAgreementV1(address(sf.gda)).getFlowRate(superToken, actor, ISuperfluidPool(pool));
     }
 
     function _updatePoolState(uint8 callNum, address pool) internal {
