@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./Properties_ERR.sol";
 import {ISuperfluidPool} from
     "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/gdav1/ISuperfluidPool.sol";
-
+import "forge-std/console.sol";
 contract Properties_GDA is Properties_ERR {
     function invariant_DISTR_01(address pool) internal {
         fl.eq(
@@ -22,11 +22,35 @@ contract Properties_GDA is Properties_ERR {
         );
     }
 
+    function invariant_DISTRF_01(address actor, address pool, int96 requestedRate) internal {
+        if (requestedRate >= 0) {
+            fl.gte(
+                requestedRate,
+                states[1].userStates[actor].gdaFlowRate,
+                "DISTRF-01: Actual flow rate should never exceed request flow rate 01"
+            );
+        } else {
+            fl.eq(
+                states[1].userStates[actor].gdaFlowRate, 
+                0, 
+                "DISTRF-01: Actual flow rate should never exceed request flow rate 02"
+            );
+        }
+    }
+
     function invariant_LIQ_01(address actor, address pool) internal {
         fl.eq(
             states[1].userStates[actor].gdaFlowRate,
             0,
             "LIQ-01: Post-liquidition GDA Flow Rate must be 0"
+        );
+    }
+
+    function invariant_LIQ_02(address actor, address pool) internal {
+        fl.eq(
+            states[1].userStates[actor].gdaFlowRate,
+            0,
+            "LIQ-02: Post-liquidition GDA Flow Rate must be 0"
         );
     }
 }

@@ -141,7 +141,6 @@ contract SuperfluidTester {
     }
 
     function distributeFlow(address from, ISuperfluidPool pool, int96 flowRate) public {
-        vm.prank(from);
         superToken.distributeFlow(from, pool, flowRate);
     }
 

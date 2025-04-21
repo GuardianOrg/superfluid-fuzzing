@@ -5,6 +5,7 @@ import {ISuperfluidPool} from
 import {HotFuzzBase} from "../../HotFuzzBase.sol";
 import {IGeneralDistributionAgreementV1} from
     "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/gdav1/IGeneralDistributionAgreementV1.sol";
+import "forge-std/console.sol";
 contract BeforeAfter is HotFuzzBase {
     
     mapping(uint8 => State) states;

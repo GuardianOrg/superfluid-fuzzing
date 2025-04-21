@@ -43,9 +43,17 @@ contract PostconditionsGDA is PostconditionsBase {
 
     function distributeFlowPostconditions(
         bool success,
-        bytes memory returnData
+        bytes memory returnData,
+        address actor,
+        address pool,
+        int96 flowRate
     ) internal {
+        address[] memory actorsToUpdate = new address[](1);
+        actorsToUpdate[0] = actor;
+        _after(actorsToUpdate, pool);
+
         if (success) {
+            invariant_DISTRF_01(actor, pool, flowRate);
             onSuccessInvariantsGeneral(returnData);
         } else {
             onFailInvariantsGeneral(returnData);
@@ -61,7 +69,7 @@ contract PostconditionsGDA is PostconditionsBase {
         address[] memory actorsToUpdate = new address[](1);
         actorsToUpdate[0] = actor;
         _after(actorsToUpdate, pool);
-        
+
         if (success) {
             invariant_LIQ_01(actor, pool);
             onSuccessInvariantsGeneral(returnData);
