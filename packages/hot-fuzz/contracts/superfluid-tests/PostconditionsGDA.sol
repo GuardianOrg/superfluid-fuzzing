@@ -102,9 +102,18 @@ contract PostconditionsGDA is PostconditionsBase {
 
     function poolTransferFromPostconditions(
         bool success,
-        bytes memory returnData
+        bytes memory returnData,
+        address actorFrom,
+        address actorTo,
+        address pool,
+        uint256 amount
     ) internal {
+        address[] memory actorsToUpdate = new address[](2);
+        actorsToUpdate[0] = actorFrom;
+        actorsToUpdate[1] = actorTo;
+        _after(actorsToUpdate, pool);
         if (success) {
+            invariant_PTRNSFR_01(actorFrom, actorTo, pool, amount);
             onSuccessInvariantsGeneral(returnData);
         } else {
             onFailInvariantsGeneral(returnData);
@@ -146,9 +155,17 @@ contract PostconditionsGDA is PostconditionsBase {
 
     function claimAllPostconditions(
         bool success,
-        bytes memory returnData
+        bytes memory returnData,
+        address actor,
+        address pool
     ) internal {
+        address[] memory actorsToUpdate = new address[](1);
+        actorsToUpdate[0] = actor;
+        _after(actorsToUpdate, pool);
+
         if (success) {
+            invariant_CLAIMALL_01(actor, pool);
+            invariant_CLAIMALL_02(actor, pool);
             onSuccessInvariantsGeneral(returnData);
         } else {
             onFailInvariantsGeneral(returnData);
@@ -157,9 +174,17 @@ contract PostconditionsGDA is PostconditionsBase {
 
     function claimAllForMemberPostconditions(
         bool success,
-        bytes memory returnData
+        bytes memory returnData,
+        address actor,
+        address pool
     ) internal {
+        address[] memory actorsToUpdate = new address[](1);
+        actorsToUpdate[0] = actor;
+        _after(actorsToUpdate, pool);
+
         if (success) {
+            invariant_CLAIMALL_01(actor, pool);
+            invariant_CLAIMALL_02(actor, pool);
             onSuccessInvariantsGeneral(returnData);
         } else {
             onFailInvariantsGeneral(returnData);

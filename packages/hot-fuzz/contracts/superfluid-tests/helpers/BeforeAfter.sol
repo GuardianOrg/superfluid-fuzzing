@@ -18,6 +18,8 @@ contract BeforeAfter is HotFuzzBase {
     struct UserState {
         uint256 tokenBalance;
         int96 gdaFlowRate;
+        uint256 poolBalance;
+        int256 claimableBalance;
     }
 
     struct State {
@@ -58,6 +60,8 @@ contract BeforeAfter is HotFuzzBase {
 
     function _setActorState(uint8 callNum, address actor, address pool) internal {
         states[callNum].userStates[actor].gdaFlowRate = IGeneralDistributionAgreementV1(address(sf.gda)).getFlowRate(superToken, actor, ISuperfluidPool(pool));
+        states[callNum].userStates[actor].poolBalance = ISuperfluidPool(pool).balanceOf(actor);
+        (states[callNum].userStates[actor].claimableBalance, ) = ISuperfluidPool(pool).getClaimableNow(actor);
     }
 
     function _updatePoolState(uint8 callNum, address pool) internal {

@@ -32,6 +32,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
 
    function createPool(uint8 a, PoolConfig memory config) public {
         SuperfluidTester tester = _getOneTester(a);
+
         (bool success, bytes memory returnData) = address(tester).call(
             abi.encodeWithSelector(tester.createPool.selector, address(tester), config)
         );
@@ -47,6 +48,9 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
         (SuperfluidTester tester) = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
         if (address(pool) == address(0)) return;
+
+        _before(new address[](0), address(pool));
+        
         bool success;
         bytes memory returnData;
         if (doConnect) {
@@ -82,6 +86,8 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(c);
         flowRate = int96(fl.clamp(flowRate, -1e18, 1e18));
+        _before(new address[](0), address(pool));
+
         (bool success, bytes memory returnData) = address(testerA).call(abi.encodeWithSelector(testerA.distributeFlow.selector,address(testerB),pool,flowRate));
         
         distributeFlowPostconditions(success, returnData,  address(testerB), address(pool), flowRate);
@@ -121,6 +127,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
         // if both conditions are met, a liquidation should occur without fail
         bool isLiquidationValid = flowExists && isDistributorCritical;
         if (isLiquidationValid) {
+            _before(new address[](0), address(pool));
             (bool success, bytes memory returnData) = address(liquidator).call(
                 abi.encodeWithSelector(liquidator.gdaLiquidate.selector, address(distributor), pool)
             );
@@ -132,8 +139,9 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
     function updateMemberUnits(uint8 a, uint8 b, uint128 units) public {
         SuperfluidTester tester = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
-        console.log("Pool:", address(pool));
         units = uint128(fl.clamp(units, 0, uint64(type(int64).max)));
+        _before(new address[](0), address(pool));
+
         (bool success, bytes memory returnData) = address(tester).call(
             abi.encodeWithSelector(
                 tester.updateMemberUnits.selector,
@@ -153,6 +161,8 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
 
         tester.approve(pool, address(testerA), amount);
         require(address(tester) != address(testerB), "self-transfer not allowed");
+        _before(new address[](0), address(pool));
+
         (bool success, bytes memory returnData) = address(testerA).call(
             abi.encodeWithSelector(
                 SEL_TRANSFER_FROM,
@@ -162,7 +172,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
                 amount
             )
         );
-        poolTransferFromPostconditions(success, returnData);
+        poolTransferFromPostconditions(success, returnData, address(tester), address(testerB), address(pool), amount);
     }
 
     function poolIncreaseAllowance(
@@ -173,6 +183,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
         addedValue = fl.clamp(addedValue, 0, type(uint256).max - pool.allowance(address(testerA), address(testerB)));
+        _before(new address[](0), address(pool));
 
         (bool success, bytes memory returnData) = address(testerA).call(
             abi.encodeWithSelector(
@@ -193,6 +204,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
         subtractedValue = fl.clamp(subtractedValue, 0, pool.allowance(address(testerA), address(testerB)));
+        _before(new address[](0), address(pool));
 
 
         (bool success, bytes memory returnData) = address(testerA).call(
@@ -213,6 +225,8 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
     ) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
+        _before(new address[](0), address(pool));
+
         (bool success, bytes memory returnData) = address(testerA).call(
             abi.encodeWithSelector(
                 bytes4(keccak256("approve(address,address,uint256)")),
@@ -227,15 +241,19 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
     function claimAll(uint8 a, uint8 b) public {
         (SuperfluidTester tester) = _getOneTester(a);
         ISuperfluidPool pool = getRandomPool(b);
+        _before(new address[](0), address(pool));
+
         (bool success, bytes memory returnData) = address(tester).call(
             abi.encodeWithSelector(bytes4(keccak256("claimAll(address)")), pool)
         );
-        claimAllPostconditions(success, returnData);
+        claimAllPostconditions(success, returnData, address(tester), address(pool));
     }
 
     function claimAllForMember(uint8 a, uint8 b) public {
         (SuperfluidTester testerA, SuperfluidTester testerB) = _getTwoTesters(a, b);
         ISuperfluidPool pool = getRandomPool(b);
+        _before(new address[](0), address(pool));
+
         (bool success, bytes memory returnData) = address(testerA).call(
             abi.encodeWithSelector(
                 bytes4(keccak256("claimAll(address,address)")),
@@ -243,7 +261,7 @@ abstract contract GDAHotFuzzMixin is PostconditionsGDA {
                 address(testerB)
             )
         );
-        claimAllForMemberPostconditions(success, returnData);
+        claimAllForMemberPostconditions(success, returnData, address(testerB), address(pool));
     }
 
     function _addPool(ISuperfluidPool pool) internal {
