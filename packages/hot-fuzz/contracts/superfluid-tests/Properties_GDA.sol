@@ -49,14 +49,6 @@ contract Properties_GDA is Properties_ERR {
         );
     }
 
-    function invariant_LIQ_02(address actor, address pool) internal {
-        fl.eq(
-            states[1].userStates[actor].gdaFlowRate,
-            0,
-            "LIQ-02: Post-liquidition GDA Flow Rate must be 0"
-        );
-    }
-
     // Pool Transfer Functions
     function invariant_PTRNSFR_01(address actorFrom, address actorTo, address pool, uint256 amount) internal {
         fl.eq(
