@@ -1,3 +1,5 @@
+NOTES: set isEchinda to true in both chaos monkey and cm
+
 <h1 align="center">Welcome to Superfluid Hot Fuzz 👋
 </h1>
 <div align="center">
@@ -13,8 +15,7 @@
 Hot-fuzz is a wrapper of [Echidna](https://github.com/crytic/echidna/) with additional helper for fuzzing
 your Superfluid smart contracts applications, including [Super Apps](https://docs.superfluid.finance/superfluid/protocol-developers/super-apps).
 
-How To Use
-==========
+# How To Use
 
 ## Setup
 
@@ -30,8 +31,8 @@ yarn add --dev 'https://gitpkg.now.sh/api/pkg?url=superfluid-finance/protocol-mo
 
 > Check out how this works:
 >
-> - https://github.com/yarnpkg/yarn/issues/4725
-> - https://gitpkg.vercel.app/
+> -   https://github.com/yarnpkg/yarn/issues/4725
+> -   https://gitpkg.vercel.app/
 
 Also make sure the dependency `@superfluid-finance/ethereum-contracts` is from the latest dev branch, since it is still
 under active development.
@@ -45,11 +46,13 @@ under active development.
 :star: Congrats! Now you should be all set!
 
 ## Echidna Command
+
 `echidna ./contracts/superfluid-tests/SuperHotFuzz.sol --contract SuperHotFuzz --config echidna.yaml`
 
 ## Develop A New Hot Fuzzer
 
 1. Create a new hot fuzz contract inheriting `HotFuzzBase`.
+
 ```solidity
 contract YouSuperAppHotFuzz is HotFuzzBase {
 
@@ -63,15 +66,19 @@ contract YouSuperAppHotFuzz is HotFuzzBase {
         _addAccount(address(_app));
     }
 ```
+
 As a convention, the contract file name should be `YourApp.hott.sol`.
 
 2. Create an Echidna yaml configuration file with at least this content:
+
 ```
 testMode: "property"
 ```
+
 Check the [Echidna documentation](https://github.com/crytic/echidna/) for more configuration options.
 
 3. Write a list of possible actions how the testers can interact with your app, for example:
+
 ```
 function participateLottery(uint8 a, int64 flowRate) public {
     LotteryPlayer player = getOnePlayer(a);
@@ -80,10 +87,12 @@ function participateLottery(uint8 a, int64 flowRate) public {
     player.play(flowRate);
 }
 ```
+
 When run, Echidna will call this functions with random values set for its parameters.
 
 4. Write additional [Echidna invariants](https://github.com/crytic/echidna#writing-invariants) which need to be true at all times, regardless of the order and parametrization of actions during the fuzzing.
-A typical invariant for Super Apps is that you don't want your App jailed:
+   A typical invariant for Super Apps is that you don't want your App jailed:
+
 ```
 function echidna_app_is_free() public view returns (bool) {
     return sf.host.isApp(_app) && !sf.host.isAppJailed(_app);
@@ -106,8 +115,7 @@ Any violation of these invariants is considered a bug somewhere in the app.
 
 That's it, let the tool discover cases for you, have fun hot-fuzzing!
 
-Contribution ✨
-===============
+# Contribution ✨
 
 The tool is still in early development, there may be breaking changes.
 

@@ -14,3 +14,4 @@ remappings = [
 out = 'build/foundry/out'
 allow_paths=["../../", "../../packages/ethereum-contracts"]
 libs = ["node_modules", "lib"]
+ffi = true

@@ -16,7 +16,7 @@ import { AgreementBase } from "./AgreementBase.sol";
 import { SafeCast } from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import { AgreementLibrary } from "./AgreementLibrary.sol";
 import { SolvencyHelperLibrary } from "../libs/SolvencyHelperLibrary.sol";
-
+    import "forge-std/console.sol";
 /**
  * @title ConstantFlowAgreementV1 contract
  * @author Superfluid
@@ -320,7 +320,7 @@ contract ConstantFlowAgreementV1 is
         (, FlowData memory data) = _getAgreementData(
             token,
             _generateFlowId(sender, receiver));
-
+console.log("_getAgreementData done");
         return(
             data.timestamp,
             data.flowRate,
@@ -942,6 +942,7 @@ contract ConstantFlowAgreementV1 is
         returns (bool exist, FlowData memory)
     {
         bytes32[] memory data = token.getAgreementData(address(this), dId, 1);
+        console.log("token.getAgreementData returned");
         return _decodeFlowData(uint256(data[0]));
     }
 

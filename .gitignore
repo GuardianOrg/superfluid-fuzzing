@@ -31,3 +31,5 @@ package-lock.json
 # echidna litters
 crytic-export
 corpus
+echidna_logs.txt
+packages/hot-fuzz/echidna

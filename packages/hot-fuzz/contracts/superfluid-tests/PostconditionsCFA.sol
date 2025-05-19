@@ -9,6 +9,7 @@ contract PostconditionsCFA is PostconditionsBase {
         bytes memory returnData
     ) internal {
         if (success) {
+            _after(new address[](0), address(0));
             onSuccessInvariantsGeneral(returnData);
         } else {
             onFailInvariantsGeneral(returnData);
@@ -20,6 +21,8 @@ contract PostconditionsCFA is PostconditionsBase {
         bytes memory returnData
     ) internal {
         if (success) {
+                        _after(new address[](0), address(0));
+
             onSuccessInvariantsGeneral(returnData);
         } else {
             onFailInvariantsGeneral(returnData);

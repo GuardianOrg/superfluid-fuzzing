@@ -5,7 +5,7 @@ test = 'packages/ethereum-contracts/test/foundry'
 solc_version = "0.8.26"
 #deny_warnings = true
 ignored_error_codes = [
-    1699 # assembly { selfdestruct } in contracts/mocks/SuperfluidDestructorMock.sol
+    1699, # assembly { selfdestruct } in contracts/mocks/SuperfluidDestructorMock.sol
 ]
 # keep in sync with truffle-config.js
 evm_version = 'paris'
@@ -17,8 +17,13 @@ remappings = [
     '@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/',
     'ds-test/=lib/forge-std/lib/ds-test/src/',
     '@perimetersec/=packages/hot-fuzz/lib/',
-    'forge-std/=lib/forge-std/src/']
+    'forge-std/=lib/forge-std/src/',
+]
 out = 'packages/ethereum-contracts/build/foundry/default'
+
+gas_limit = 100_000_000
+
+ffi = true
 
 [invariant]
 runs = 2000

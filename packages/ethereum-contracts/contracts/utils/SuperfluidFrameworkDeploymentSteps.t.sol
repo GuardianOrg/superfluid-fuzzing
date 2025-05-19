@@ -35,7 +35,6 @@ import { MacroForwarder } from "../utils/MacroForwarder.sol";
 import "forge-std/Test.sol";
 import { ERC1820RegistryCompiled } from "../libs/ERC1820RegistryCompiled.sol";
 
-
 /// @title Superfluid Framework Deployment Steps
 /// @author Superfluid
 /// @notice A contract which splits framework deployment into steps.
@@ -77,15 +76,15 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
     Superfluid internal host;
 
     // Agreement Contracts
-    ConstantFlowAgreementV1        internal cfaV1;
+    ConstantFlowAgreementV1 internal cfaV1;
     InstantDistributionAgreementV1 internal idaV1;
     GeneralDistributionAgreementV1 internal gdaV1;
 
     // SuperToken-related Contracts
-    PoolAdminNFT       internal poolAdminNFT;
-    PoolMemberNFT      internal poolMemberNFT;
+    PoolAdminNFT internal poolAdminNFT;
+    PoolMemberNFT internal poolMemberNFT;
 
-    ISuperToken       internal superTokenLogic;
+    ISuperToken internal superTokenLogic;
     SuperTokenFactory internal superTokenFactory;
 
     // Forwarders
@@ -139,11 +138,13 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
     function executeStep(uint8 step) public {
         if (step != currentStep) revert("Incorrect step");
 
-        if (step == 0) { // CORE CONTRACT: TestGovernance
+        if (step == 0) {
+            // CORE CONTRACT: TestGovernance
             // Deploy TestGovernance, a Superfluid Governance for testing purpose. It needs initialization later.
             testGovernance = SuperfluidGovDeployerLibrary.deployTestGovernance();
             SuperfluidGovDeployerLibrary.transferOwnership(testGovernance, address(this));
-        } else if (step == 1) { // CORE CONTRACT: Superfluid (Host)
+        } else if (step == 1) {
+            // CORE CONTRACT: Superfluid (Host)
             SimpleForwarder simpleForwarder = new SimpleForwarder();
             ERC2771Forwarder erc2771Forwarder = new ERC2771Forwarder();
             // Deploy Host and initialize the test governance.
@@ -163,7 +164,8 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
                 DEFAULT_PATRICIAN_PERIOD,
                 new address[](0) // no trusted forwarders
             );
-        } else if (step == 2) { // CORE CONTRACTS: Core Agreements
+        } else if (step == 2) {
+            // CORE CONTRACTS: Core Agreements
             ConstantFlowAgreementV1 cfaV1Logic = SuperfluidCFAv1DeployerLibrary.deploy(host);
             InstantDistributionAgreementV1 idaV1Logic = SuperfluidIDAv1DeployerLibrary.deploy(host);
             GeneralDistributionAgreementV1 gdaV1Logic;
@@ -197,11 +199,11 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
                 gdaV1Logic.superfluidPoolBeacon().upgradeTo(address(superfluidPoolLogic));
                 gdaV1Logic.superfluidPoolBeacon().transferOwnership(address(host));
             }
-        } else if (step == 3) {// PERIPHERAL CONTRACTS: NFT Proxy and Logic
+        } else if (step == 3) {
+            // PERIPHERAL CONTRACTS: NFT Proxy and Logic
             {
                 poolAdminNFT = PoolAdminNFT(address(ProxyDeployerLibrary.deployUUPSProxy()));
-                PoolAdminNFT poolAdminNFTLogic =
-                    SuperfluidPoolNFTLogicDeployerLibrary.deployPoolAdminNFT(host, gdaV1);
+                PoolAdminNFT poolAdminNFTLogic = SuperfluidPoolNFTLogicDeployerLibrary.deployPoolAdminNFT(host, gdaV1);
                 poolAdminNFTLogic.castrate();
                 UUPSProxy(payable(address(poolAdminNFT))).initializeProxy(address(poolAdminNFTLogic));
 
@@ -214,7 +216,8 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
                 poolAdminNFT.initialize("Pool Admin NFT", "PA");
                 poolMemberNFT.initialize("Pool Member NFT", "PM");
             }
-        } else if (step == 4) { // PERIPHERAL CONTRACTS: FORWARDERS
+        } else if (step == 4) {
+            // PERIPHERAL CONTRACTS: FORWARDERS
             // Deploy CFAv1Forwarder
             cfaV1Forwarder = CFAv1ForwarderDeployerLibrary.deploy(host);
             testGovernance.enableTrustedForwarder(host, ISuperfluidToken(address(0)), address(cfaV1Forwarder));
@@ -226,13 +229,10 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
             // Deploy MacroForwarder
             macroForwarder = new MacroForwarder(host);
             testGovernance.enableTrustedForwarder(host, ISuperfluidToken(address(0)), address(macroForwarder));
-        } else if (step == 5) {// PERIPHERAL CONTRACTS: SuperToken Logic and SuperTokenFactory Logic
+        } else if (step == 5) {
+            // PERIPHERAL CONTRACTS: SuperToken Logic and SuperTokenFactory Logic
             // Deploy canonical SuperToken logic contract
-            superTokenLogic = SuperToken(SuperTokenDeployerLibrary.deploy(
-                host,
-                poolAdminNFT,
-                poolMemberNFT
-            ));
+            superTokenLogic = SuperToken(SuperTokenDeployerLibrary.deploy(host, poolAdminNFT, poolMemberNFT));
 
             // Deploy SuperToken Factory
             // Note:
@@ -254,7 +254,8 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
             // in the upgradeable case, we create a new proxy contract in the function
             // and set it as the canonical supertokenfactory.
             superTokenFactory = SuperTokenFactory(address(host.getSuperTokenFactory()));
-        } else if (step == 6) {// PERIPHERAL CONTRACTS: Resolver, SuperfluidLoader, TOGA, BatchLiquidator
+        } else if (step == 6) {
+            // PERIPHERAL CONTRACTS: Resolver, SuperfluidLoader, TOGA, BatchLiquidator
             // Deploy TestResolver
             // Deploy SuperfluidLoader and make SuperfluidFrameworkDeployer an admin for the TestResolver
             // Set TestGovernance, Superfluid, SuperfluidLoader and CFAv1Forwarder in TestResolver
@@ -285,7 +286,7 @@ contract SuperfluidFrameworkDeploymentSteps is Test {
             batchLiquidator = SuperfluidPeripheryDeployerLibrary.deployBatchLiquidator(host);
 
             // Deploy TOGA
-            // vm.etch(ERC1820RegistryCompiled.at, ERC1820RegistryCompiled.bin);
+            vm.etch(ERC1820RegistryCompiled.at, ERC1820RegistryCompiled.bin);
             if (!_is1820Deployed()) revert DEPLOY_TOGA_REQUIRES_1820();
             toga = SuperfluidPeripheryDeployerLibrary.deployTOGA(host, DEFAULT_TOGA_MIN_BOND_DURATION);
             testGovernance.setRewardAddress(host, ISuperfluidToken(address(0)), address(toga));
@@ -324,9 +325,7 @@ library SuperfluidHostDeployerLibrary {
         uint64 callbackGasLimit,
         address simpleForwarderAddress,
         address erc2771ForwarderAddress
-    )
-        external returns (Superfluid)
-    {
+    ) external returns (Superfluid) {
         return new Superfluid(
             _nonUpgradable, _appWhiteListingEnabled, callbackGasLimit, simpleForwarderAddress, erc2771ForwarderAddress
         );
@@ -340,10 +339,7 @@ library SuperfluidCFAv1DeployerLibrary {
 }
 
 library SuperfluidIDAv1DeployerLibrary {
-    function deploy(ISuperfluid _host)
-        external
-        returns (InstantDistributionAgreementV1)
-    {
+    function deploy(ISuperfluid _host) external returns (InstantDistributionAgreementV1) {
         return new InstantDistributionAgreementV1(_host);
     }
 }
@@ -355,7 +351,8 @@ library SuperfluidPoolLogicDeployerLibrary {
 }
 
 library SuperfluidGDAv1DeployerLibrary {
-    function deploy(ISuperfluid host, SuperfluidUpgradeableBeacon superfluidPoolBeacon) external
+    function deploy(ISuperfluid host, SuperfluidUpgradeableBeacon superfluidPoolBeacon)
+        external
         returns (GeneralDistributionAgreementV1 gdaV1Logic)
     {
         gdaV1Logic = new GeneralDistributionAgreementV1(host, superfluidPoolBeacon);
@@ -375,18 +372,15 @@ library GDAv1ForwarderDeployerLibrary {
 }
 
 library SuperTokenDeployerLibrary {
-    function deploy(
-        ISuperfluid host,
-        IPoolAdminNFT poolAdminNFT,
-        IPoolMemberNFT poolMemberNFT
-    ) external returns (address) {
-        return address(new SuperToken(
-            host,
-            IConstantOutflowNFT(address(0)),
-            IConstantInflowNFT(address(0)),
-            poolAdminNFT,
-            poolMemberNFT
-        ));
+    function deploy(ISuperfluid host, IPoolAdminNFT poolAdminNFT, IPoolMemberNFT poolMemberNFT)
+        external
+        returns (address)
+    {
+        return address(
+            new SuperToken(
+                host, IConstantOutflowNFT(address(0)), IConstantInflowNFT(address(0)), poolAdminNFT, poolMemberNFT
+            )
+        );
     }
 }
 

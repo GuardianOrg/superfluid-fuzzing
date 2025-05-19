@@ -1,0 +1,90 @@
+Sequence #1 (length=6):
+DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow
+
+Sequence #2 (length=6):
+DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow
+
+Sequence #3 (length=5):
+UpdateFlow, UpdateFlow, UpdateFlow, UpdateFlow, UpdateFlow
+
+Sequence #4 (length=4):
+DistributeFlow, DistributeFlow, Distribute, Approve
+
+Sequence #5 (length=4):
+Approve, Approve, UpdateFlow, UpdateFlow
+
+Sequence #6 (length=4):
+Approve, UpdateFlow, DistributeFlow, DistributeFlow
+
+Sequence #7 (length=4):
+DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow
+
+Sequence #8 (length=4):
+Approve, Approve, UpdateFlow, UpdateFlow
+
+Sequence #9 (length=4):
+DistributeFlow, DistributeFlow, DistributeFlow, DistributeFlow
+
+Sequence #10 (length=3):
+Approve, Approve, Approve
+
+Sequence #11 (length=3):
+CreateFlow, DistributeFlow, DistributeFlow
+
+Sequence #12 (length=3):
+CreateFlow, UpdateFlow, UpdateFlow
+
+Sequence #13 (length=3):
+DistributeFlow, DistributeFlow, UpdateFlow
+
+Sequence #14 (length=3):
+Transfer, Transfer, Transfer
+
+Sequence #15 (length=3):
+DistributeFlow, DistributeFlow, DistributeFlow
+
+Sequence #16 (length=3):
+Transfer, Distribute, DistributeFlow
+
+Sequence #17 (length=3):
+Approve, DistributeFlow, UpdateFlow
+
+Sequence #18 (length=3):
+Approve, UpdateFlow, DistributeFlow
+
+Sequence #19 (length=3):
+UpdateFlow, UpdateFlow, DistributeFlow
+
+Sequence #20 (length=3):
+Transfer, DistributeFlow, Distribute
+
+Sequence #21 (length=3):
+UpdateFlow, UpdateFlow, Distribute
+
+Sequence #22 (length=3):
+DistributeFlow, Approve, Transfer
+
+Sequence #23 (length=3):
+Distribute, DistributeFlow, UpdateFlow
+
+Sequence #24 (length=3):
+Approve, Approve, DistributeFlow
+
+Sequence #25 (length=3):
+DistributeFlow, DistributeFlow, DistributeFlow
+
+Sequence #26 (length=3):
+Approve, UpdateFlow, DistributeFlow
+
+Sequence #27 (length=3):
+UpdateFlow, Transfer, UpdateFlow
+
+Sequence #28 (length=3):
+Distribute, Transfer, Transfer
+
+Sequence #29 (length=3):
+UpdateFlow, CreateFlow, CreateFlow
+
+Sequence #30 (length=3):
+UpdateFlow, Distribute, UpdateFlow
+

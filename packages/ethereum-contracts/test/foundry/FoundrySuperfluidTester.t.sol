@@ -171,7 +171,7 @@ contract FoundrySuperfluidTester is Test {
 
     constructor(uint8 nTesters) {
         // deploy ERC1820 registry
-        vm.etch(ERC1820RegistryCompiled.at, ERC1820RegistryCompiled.bin);
+        // vm.etch(ERC1820RegistryCompiled.at, ERC1820RegistryCompiled.bin);
 
         // deploy SuperfluidFrameworkDeployer
         // which deploys in its constructor:

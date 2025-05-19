@@ -1,0 +1,300 @@
+Sequence #1 (length=9):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, TransferAll
+
+Sequence #2 (length=9):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, DistributeFlow, Downgrade, SetMaxFlowPermissions, CallAnotherApp, Noop
+
+Sequence #3 (length=9):
+Upgrade, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #4 (length=9):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, TransferAll, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #5 (length=9):
+Noop, Downgrade, DistributeFlow, SetMaxFlowPermissions, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, TransferAll
+
+Sequence #6 (length=9):
+Noop, Noop, SetMaxFlowPermissions, Downgrade, DistributeFlow, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #7 (length=8):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #8 (length=8):
+Noop, DistributeFlow, DistributeFlow, DistributeFlow, Noop, DistributeFlow, Downgrade, Downgrade
+
+Sequence #9 (length=8):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop, SetMaxFlowPermissions, Downgrade, DistributeFlow
+
+Sequence #10 (length=8):
+Downgrade, DistributeFlow, Noop, SetMaxFlowPermissions, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #11 (length=8):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, DistributeFlow, Downgrade, SetMaxFlowPermissions, CallAnotherApp
+
+Sequence #12 (length=8):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, DistributeFlow, Downgrade, SetMaxFlowPermissions, DisconnectPool
+
+Sequence #13 (length=8):
+DistributeFlow, Downgrade, SetMaxFlowPermissions, CallAnotherApp, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #14 (length=8):
+Noop, SetMaxFlowPermissions, Downgrade, DistributeFlow, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #15 (length=8):
+Noop, DistributeFlow, SetMaxFlowPermissions, Downgrade, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #16 (length=8):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop, DistributeFlow, SetMaxFlowPermissions, Downgrade
+
+Sequence #17 (length=7):
+DisconnectPool, DisconnectPool, TransferAll, ConnectPool, DisconnectPool, CallAnotherApp, ReturnValidCtx
+
+Sequence #18 (length=7):
+ConnectPool, TransferAll, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop
+
+Sequence #19 (length=7):
+Noop, DistributeFlow, Downgrade, Noop, SetMaxFlowPermissions, UpdateFlow, TransferAll
+
+Sequence #20 (length=7):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnValidCtx, IncreaseAllowance, ReturnValidCtx
+
+Sequence #21 (length=7):
+Noop, Noop, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnEmptyCtx
+
+Sequence #22 (length=7):
+Downgrade, UpdateFlow, Distribute, Distribute, Downgrade, UpdateFlow, Distribute
+
+Sequence #23 (length=7):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop, Transfer, DisconnectPool
+
+Sequence #24 (length=7):
+IncreaseAllowance, IncreaseAllowance, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Upgrade
+
+Sequence #25 (length=7):
+SetMaxFlowPermissions, Transfer, CreateFlow, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #26 (length=7):
+Approve, DecreaseAllowance, DisconnectPool, DisconnectPool, DisconnectPool, DisconnectPool, DisconnectPool
+
+Sequence #27 (length=7):
+SetFlowPermissions, Transfer, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnEmptyCtx
+
+Sequence #28 (length=7):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ConnectPool, CallAnotherApp, Noop
+
+Sequence #29 (length=6):
+Transfer, Approve, ReturnValidCtx, Noop, Approve, Upgrade
+
+Sequence #30 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ConnectPool, ClaimAll
+
+Sequence #31 (length=6):
+TransferAll, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Noop
+
+Sequence #32 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnEmptyCtx, Noop
+
+Sequence #33 (length=6):
+DisconnectPool, DisconnectPool, TransferAll, ConnectPool, DistributeFlow, DisconnectPool
+
+Sequence #34 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, TransferAll, RevokeFlowPermissions
+
+Sequence #35 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, TransferAll, ReturnEmptyCtx
+
+Sequence #36 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, CreateFlow, RevokeFlowPermissions
+
+Sequence #37 (length=6):
+TransferAll, RevokeFlowPermissions, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #38 (length=6):
+TransferAll, ClaimAll, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #39 (length=6):
+Noop, Downgrade, SetFlowPermissions, RevokeFlowPermissions, ConnectPool, ReturnEmptyCtx
+
+Sequence #40 (length=6):
+DisconnectPool, Transfer, DistributeFlow, CallAnotherApp, ConnectPool, DistributeFlow
+
+Sequence #41 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Downgrade, ConnectPool
+
+Sequence #42 (length=6):
+Noop, Downgrade, SetMaxFlowPermissions, ClaimAll, UpdateFlow, Distribute
+
+Sequence #43 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, SetMaxFlowPermissions, ReturnValidCtx
+
+Sequence #44 (length=6):
+Noop, DistributeFlow, Downgrade, Transfer, SetMaxFlowPermissions, Transfer
+
+Sequence #45 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, DistributeFlow, TransferAll
+
+Sequence #46 (length=6):
+Noop, Downgrade, Noop, Transfer, ConnectPool, ReturnValidCtx
+
+Sequence #47 (length=6):
+Upgrade, DisconnectPool, ReturnEmptyCtx, ReturnValidCtx, ReturnValidCtx, ReturnValidCtx
+
+Sequence #48 (length=6):
+Approve, DecreaseAllowance, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #49 (length=6):
+CreateFlow, Approve, Downgrade, ReturnInvalidCtx, TransferAll, Upgrade
+
+Sequence #50 (length=6):
+ConnectPool, DistributeFlow, CallAnotherApp, Downgrade, UpdateFlow, Distribute
+
+Sequence #51 (length=6):
+CallAnotherApp, TransferAll, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #52 (length=6):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Distribute, ConnectPool
+
+Sequence #53 (length=6):
+Transfer, Approve, Noop, Downgrade, SetFlowPermissions, RevokeFlowPermissions
+
+Sequence #54 (length=5):
+IncreaseAllowance, RevokeFlowPermissions, Transfer, SetMaxFlowPermissions, SetMaxFlowPermissions
+
+Sequence #55 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, DistributeFlow
+
+Sequence #56 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, TransferAll
+
+Sequence #57 (length=5):
+CreateFlow, Noop, Noop, Noop, SetFlowPermissions
+
+Sequence #58 (length=5):
+TransferAll, ConnectPool, DisconnectPool, CallAnotherApp, ReturnValidCtx
+
+Sequence #59 (length=5):
+DisconnectPool, DisconnectPool, TransferAll, ConnectPool, DisconnectPool
+
+Sequence #60 (length=5):
+Noop, Downgrade, SetFlowPermissions, RevokeFlowPermissions, RevokeFlowPermissions
+
+Sequence #61 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnEmptyCtx
+
+Sequence #62 (length=5):
+Transfer, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #63 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnInvalidCtx
+
+Sequence #64 (length=5):
+Noop, Downgrade, SetFlowPermissions, RevokeFlowPermissions, Upgrade
+
+Sequence #65 (length=5):
+ConnectPool, Noop, Downgrade, Noop, Transfer
+
+Sequence #66 (length=5):
+Approve, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #67 (length=5):
+TransferAll, Noop, Downgrade, SetMaxFlowPermissions, UpdateFlow
+
+Sequence #68 (length=5):
+DisconnectPool, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #69 (length=5):
+Noop, Noop, Noop, Noop, CallAnotherApp
+
+Sequence #70 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Downgrade
+
+Sequence #71 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, CallAnotherApp
+
+Sequence #72 (length=5):
+ClaimAll, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #73 (length=5):
+Noop, Downgrade, Approve, DisconnectPool, TransferAll
+
+Sequence #74 (length=5):
+RevokeFlowPermissions, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #75 (length=5):
+Noop, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #76 (length=5):
+Downgrade, SetMaxFlowPermissions, DistributeFlow, Downgrade, Noop
+
+Sequence #77 (length=5):
+DisconnectPool, SetMaxFlowPermissions, SetMaxFlowPermissions, SetMaxFlowPermissions, TransferAll
+
+Sequence #78 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Upgrade
+
+Sequence #79 (length=5):
+ReturnInvalidCtx, Noop, IncreaseAllowance, Transfer, Transfer
+
+Sequence #80 (length=5):
+TransferAll, Downgrade, DisconnectPool, Noop, Downgrade
+
+Sequence #81 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, Approve
+
+Sequence #82 (length=5):
+Noop, Downgrade, SetMaxFlowPermissions, CallAnotherApp, Downgrade
+
+Sequence #83 (length=5):
+DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnInvalidCtx, TransferAll
+
+Sequence #84 (length=5):
+ConnectPool, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #85 (length=5):
+CallAnotherApp, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #86 (length=5):
+ReturnEmptyCtx, Noop, Noop, Downgrade, Approve
+
+Sequence #87 (length=5):
+UpdateFlow, ClaimAll, Downgrade, Approve, ClaimAll
+
+Sequence #88 (length=5):
+Transfer, Approve, ReturnValidCtx, Noop, Approve
+
+Sequence #89 (length=5):
+CreateFlow, Noop, DistributeFlow, Downgrade, ConnectPool
+
+Sequence #90 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, ReturnValidCtx
+
+Sequence #91 (length=5):
+Noop, Noop, Noop, DistributeFlow, Downgrade
+
+Sequence #92 (length=5):
+Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions, UpdateFlow
+
+Sequence #93 (length=5):
+Downgrade, Noop, DistributeFlow, DistributeFlow, DistributeFlow
+
+Sequence #94 (length=5):
+IncreaseAllowance, Noop, Downgrade, DisconnectPool, Noop
+
+Sequence #95 (length=5):
+Transfer, ReturnInvalidCtx, Transfer, Noop, IncreaseAllowance
+
+Sequence #96 (length=5):
+Approve, DecreaseAllowance, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #97 (length=5):
+Noop, Downgrade, DistributeFlow, SetMaxFlowPermissions, ConnectPool
+
+Sequence #98 (length=5):
+UpdateFlow, Noop, DistributeFlow, Downgrade, SetMaxFlowPermissions
+
+Sequence #99 (length=5):
+Noop, Transfer, DistributeFlow, Transfer, Downgrade
+
+Sequence #100 (length=5):
+Noop, DistributeFlow, Downgrade, ReturnEmptyCtx, Noop
+

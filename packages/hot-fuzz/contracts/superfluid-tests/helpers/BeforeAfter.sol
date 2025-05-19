@@ -50,12 +50,20 @@ contract BeforeAfter is HotFuzzBase {
         // }
         // @audit Loop through all testers for now to simplify suite build.
         for (uint256 i = 0; i < testers.length; i++) {
-            _setActorState(callNum, address(testers[i]), pool);
+            console.log("Setting actor state for", i);
+            for (uint256 j = 0; j < pools.length; j++) {
+                if (address(pools[j]) == address(0)) continue;
+                _setActorState(callNum, address(testers[i]), address(pools[j]));
+            }
         }
     }
 
     function _updateCommonState(uint8 callNum, address pool) private {
-        _updatePoolState(callNum,  pool);
+       for (uint256 i = 0; i < pools.length; i++) {
+       if (address(pools[i]) == address(0)) continue;
+        _updatePoolState(callNum, address(pools[i]));
+       }
+        
     }
 
     function _setActorState(uint8 callNum, address actor, address pool) internal {

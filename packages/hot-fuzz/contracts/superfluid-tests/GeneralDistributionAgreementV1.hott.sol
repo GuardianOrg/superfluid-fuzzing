@@ -14,7 +14,6 @@ import "forge-std/console.sol";
 abstract contract GDAHotFuzzMixin is PostconditionsGDA {
     using SuperTokenV1Library for SuperToken;
 
-    ISuperfluidPool[] public pools;
     bytes4 private constant SEL_TRANSFER_FROM = bytes4(keccak256("transferFrom(address,address,address,uint256)"));
 
     function getRandomPool(uint8 input) public returns (ISuperfluidPool pool) {

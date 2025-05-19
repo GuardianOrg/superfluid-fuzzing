@@ -5,8 +5,9 @@ import { FoundrySuperfluidTester } from "../../foundry/FoundrySuperfluidTester.t
 import { ISuperfluidPool, SuperfluidPool } from "../../../contracts/agreements/gdav1/SuperfluidPool.sol";
 import { SuperTokenV1Library } from "../../../contracts/apps/SuperTokenV1Library.sol";
 import { ISuperToken, SuperToken } from "../../../contracts/superfluid/SuperToken.sol";
-
+import "forge-std/console.sol";
 /// @dev This contract includes test sequences discovered by echidna which broke invariants previously.
+
 contract EchidnaTestCases is FoundrySuperfluidTester {
     using SuperTokenV1Library for ISuperToken;
 
