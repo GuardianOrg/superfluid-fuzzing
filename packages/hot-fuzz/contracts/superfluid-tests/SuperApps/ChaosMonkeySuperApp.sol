@@ -208,7 +208,6 @@ contract ChaosMonkeySuperApp is ISuperApp, FuzzBase {
         if (actionType == ActionType.ReturnInvalidCtx) return "ReturnInvalidCtx";
         if (actionType == ActionType.ReturnValidCtx) return "ReturnValidCtx";
         if (actionType == ActionType.CallAnotherApp) return "CallAnotherApp";
-        if (actionType == ActionType.CfaLiquidate) return "CfaLiquidate";
         return "Unknown";
     }
 
